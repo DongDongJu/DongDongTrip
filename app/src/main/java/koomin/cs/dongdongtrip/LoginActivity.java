@@ -3,23 +3,23 @@ package koomin.cs.dongdongtrip;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,24 +30,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -119,12 +111,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
 			Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
 					.setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+						@Override
+						@TargetApi(Build.VERSION_CODES.M)
+						public void onClick(View v) {
+							requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+						}
+					});
 		} else {
 			requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
 		}
@@ -284,6 +276,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 				ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
 		};
 
+
 		int ADDRESS = 0;
 		int IS_PRIMARY = 1;
 	}
@@ -306,7 +299,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 		private String mEmail;
 		private String mPassword;
-
+		String result=null;
 		UserLoginTask(String email, String password) {
 			mEmail = email;
 			mPassword = password;
@@ -315,44 +308,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		@Override
 		protected String doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
-            InputStream is = null;
-            HttpResponse response =null;
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			nameValuePairs.add(new BasicNameValuePair("username",mEmail));
-			nameValuePairs.add(new BasicNameValuePair("password",mPassword));
-			String result =null;
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://52.79.196.187/login.php");
-			System.out.println(nameValuePairs);
-            try {
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                response = httpClient.execute(httpPost);
-                HttpEntity entity = response.getEntity();
-                is = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is,"UTF-8"),8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while((line = reader.readLine())!= null)
-                {
-                    sb.append(line+"\n");
-                }
-                result = sb.toString();
-            }catch (java.io.UnsupportedEncodingException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            // TODO: register the new account here.
+			try {
+
+				URL url = new URL("http://52.79.196.187/login.php?");
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+				conn.setUseCaches(false);
+				conn.setRequestMethod("POST");
+
+				String postData = "username="+mEmail+"&"+"password="+mPassword;
+
+				OutputStream out = conn.getOutputStream();
+				out.write(postData.getBytes());
+				out.flush();
+				out.close();
+
+				BufferedReader rd = null;
+				rd = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
+				String line=null;
+				while((line=rd.readLine()) != null){
+					if(line != "null")
+						result= new String(line);
+				}
+				Log.d("RESPONSE","The response -> " +result);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (java.io.IOException e){
+				e.printStackTrace();
+			}
+
 			return result;
 		}
-
-		protected void onPostExecute(String result) {
-            String s = result.trim();
+		protected void onPostExecute(String result2) {
+			String s = result.trim();
 			showProgress(false);
 
-			if (s.equalsIgnoreCase("success")) {
+			if (s.equalsIgnoreCase("failure")) {
+				Intent ViewerIntent = new Intent(LoginActivity.this,RecyclerViewActivity.class);
+				startActivity(ViewerIntent);
 				finish();
                 // next activity start
 			} else {
