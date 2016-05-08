@@ -7,11 +7,12 @@ Using Android Login & Google maps template & RecyclerView
 	total flow
 
 
-login activity -> success -> cardview -> google maps view
+	login activity -> success -> cardview -> google maps view
 
-	       -> failed -> retry
+	       	      -> failed -> retry
 
 
 	running example
+	
 
 
