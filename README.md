@@ -14,8 +14,10 @@ Using Android Login & Google maps template & RecyclerView
 
 running example
 
-<img height="700" src="example/example.gif"/>
-
+<br>
+<img height="400" src="example/example.gif"/>
+<br>
+	
 	
 
 
