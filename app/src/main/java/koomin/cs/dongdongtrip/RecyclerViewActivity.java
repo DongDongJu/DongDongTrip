@@ -5,9 +5,11 @@ package koomin.cs.dongdongtrip;
  */
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,12 @@ public class RecyclerViewActivity extends Activity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
-
         initializeData();
         initializeAdapter();
     }
-
+    public List<State> getStates(){
+        return states;
+    }
     private void initializeData(){
         states = new ArrayList<>();
         states.add(new State("숭례문", "숭례문은 조선의 수도인 한양의 4대문 중의 하나로 남쪽의 대문이다.", R.drawable.srm));
@@ -43,5 +46,6 @@ public class RecyclerViewActivity extends Activity {
     private void initializeAdapter(){
         RVAdapter adapter = new RVAdapter(states);
         rv.setAdapter(adapter);
+
     }
 }

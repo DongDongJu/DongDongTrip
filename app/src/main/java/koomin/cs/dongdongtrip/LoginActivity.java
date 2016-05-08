@@ -43,6 +43,11 @@ import java.util.regex.Pattern;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
+/*
+	Kookmin University
+	20103347 SeoDongJu
+	use android login template
+ */
 /**
  * A login screen that offers login via email/password.
  */
@@ -307,7 +312,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 		@Override
 		protected String doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
 			try {
 
 				URL url = new URL("http://52.79.196.187/login.php?");
@@ -316,6 +320,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 				conn.setDoOutput(true);
 				conn.setUseCaches(false);
 				conn.setRequestMethod("POST");
+				//use http conn
 
 				String postData = "username="+mEmail+"&"+"password="+mPassword;
 
