@@ -53,14 +53,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng kbg = new LatLng(37.579617, 126.977041);
         LatLng nst = new LatLng(37.5511736,126.9860379);
         LatLng srm = new LatLng(37.5599568,126.9731133);
+        LatLng ldwd = new LatLng(37.51112,127.0959783);
+        LatLng st = new LatLng(37.5193818,126.9380216);
         latLngList.add(srm);
         latLngList.add(kbg);
         latLngList.add(nst);
-
+        latLngList.add(ldwd);
+        latLngList.add(st);
         StateName = new ArrayList<>();
         StateName.add(new String("숭례문"));
         StateName.add(new String("경복궁"));
         StateName.add(new String("N남산타워"));
+        StateName.add(new String("롯데월드"));
+        StateName.add(new String("63빌딩"));
     }
     public void onBackPressed(){
 
