@@ -12,7 +12,12 @@ Using Android Login & Google maps template & RecyclerView
 	       	      -> failed -> retry
 
 
-	running example
+running example
+
+<br>
+<img height="700" src="https://github.com/DongDongJu/DongDongTrip/tree/master/example/example.gif"/>
+<br>
+	
 	
 
 
